@@ -3,12 +3,13 @@ import java.io.IOException;
 import java.util.Scanner;
 
 class Main {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
         Scanner scanner = new Scanner(System.in);
         String[] products = {"Хлеб", "Яблоки", "Молоко"};
         int[] prices = {100, 200, 300};
 
         String fileName = "basket.txt";
+        String binFileName = "basket.bin";
 
         File textFile = new File(fileName);
         for (int i = 0; i < products.length; i++) {
@@ -17,7 +18,9 @@ class Main {
         }
         //int[] basket = new int[3];
         //Basket basket = new Basket(products, prices);
-        Basket basket = Basket.loadFromTxtFile(fileName, products, prices);
+        //Basket basket = Basket.loadFromTxtFile(fileName, products, prices);
+        Basket basket = Basket.loadFromBinFile(binFileName);
+
         System.out.println("Ваша корзина:");
         basket.printCart();
         while (true) {
@@ -33,22 +36,11 @@ class Main {
                 byte amount = Byte.valueOf(numbers[1]);
                 //basket[number - 1] += amount;
                 basket.addToCart(number, amount);
-                basket.saveTxt(textFile);
+                //basket.saveTxt(textFile);
+                basket.saveBin(binFileName);
             }
-            /*
-        }
-        int totalPrice = 0;
-        for (int i = 0; i < basket.length; i++) {
-            int priceOfProduct = basket[i] * prices[i];
-            totalPrice += priceOfProduct;
-            if (basket[i] > 0) {
-                System.out.println("продукт " + products[i] + " количество " + basket[i] + " стоимость " + priceOfProduct);
-            }
-        }
-        System.out.println("общая цена " + totalPrice);
-        scanner.close();*/
+
             basket.printCart();
-            basket.saveTxt(textFile);
         }
     }
 }
