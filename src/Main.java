@@ -3,7 +3,8 @@ import java.io.IOException;
 import java.util.Scanner;
 
 class Main {
-    public static void main(String[] args) throws IOException, ClassNotFoundException {
+    public static void main(String[] args) throws IOException {
+
         Scanner scanner = new Scanner(System.in);
         String[] products = {"Хлеб", "Яблоки", "Молоко"};
         int[] prices = {100, 200, 300};
@@ -13,13 +14,11 @@ class Main {
 
         File textFile = new File(fileName);
         for (int i = 0; i < products.length; i++) {
-            // 1. Молоко 50 руб/шт
             System.out.println(i + 1 + ". " + products[i] + " " + prices[i] + " руб/шт");
         }
-        //int[] basket = new int[3];
         //Basket basket = new Basket(products, prices);
-        //Basket basket = Basket.loadFromTxtFile(fileName, products, prices);
-        Basket basket = Basket.loadFromBinFile(binFileName);
+        Basket basket = Basket.loadFromTxtFile(new File(fileName));
+        //Basket basket = Basket.loadFromBinFile(new File(binFileName));
 
         System.out.println("Ваша корзина:");
         basket.printCart();
@@ -32,12 +31,13 @@ class Main {
             }
             String[] numbers = line.split(" ");
             if (numbers.length > 1) {
+
                 byte number = Byte.valueOf(numbers[0]);
                 byte amount = Byte.valueOf(numbers[1]);
-                //basket[number - 1] += amount;
+
                 basket.addToCart(number, amount);
-                //basket.saveTxt(textFile);
-                basket.saveBin(binFileName);
+                basket.saveTxt(textFile);
+                basket.saveBin(new File(binFileName));
             }
 
             basket.printCart();

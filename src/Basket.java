@@ -2,17 +2,20 @@ import java.io.*;
 
 public class Basket implements Serializable {
     private int[] basket = new int[3];
-    private int[] prices;
-    private String[] products;
+    private String[] products = new String[3];
+    private int[] prices = new int[3];
 
     public Basket(String[] products, int[] prices) {
         this.products = products;
         this.prices = prices;
     }
+
+    public Basket() {
+
+    }
+
     public void addToCart(int productNum, int amount){
         basket[productNum - 1] += amount;
-
-
     };
    public void printCart() {
        int totalPrice = 0;
@@ -30,40 +33,58 @@ public class Basket implements Serializable {
     public void saveTxt(File textFile) throws IOException {
 
         try (PrintWriter out = new PrintWriter(textFile)) {
-            for (int i = 0; i < basket.length; i++) {
 
-                // (long e : longArrInField)
+            for (int i = 0; i < products.length; i++) {
+                out.print(products[i] + " ");
+            }
+            out.println("");
+            for (int i = 0; i < prices.length; i++) {
+                out.print(prices[i] + " ");
+            }
+            out.println("");
+            for (int i = 0; i < basket.length; i++) {
                 out.print(basket[i] + " ");
             }
+
         } catch (IOException e) {
             System.out.println(e.toString());
         }
 
     }
 
-    static Basket loadFromTxtFile(String fileName, String[] products, int[] prices)  throws IOException {
+    static Basket loadFromTxtFile(File textFile)  throws IOException {
 
-        Basket basket = new Basket(products, prices);
+        Basket basket = new Basket();
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(fileName)))  {
+        try (BufferedReader reader = new BufferedReader(new FileReader(textFile)))  {
+            //products
             String value = reader.readLine();
+            String[] products_name = value.split(" ");
+            int i = 0;
+            for (String a: products_name) {
+                basket.products[i] = a;
+                i++;
+            }
+
+            //prices
+            value = reader.readLine();
+            String[] prices_name = value.split(" ");
+            i = 0;
+            for (String a: prices_name) {
+                basket.prices[i] = Integer.parseInt(a);
+                i++;
+            }
+
+            //basket
+            value = reader.readLine();
             String[] amounts = value.split(" ");
-            int i = 1;
+            i = 1;
             for (String a: amounts) {
                 basket.addToCart(i, Integer.parseInt(a));
                 i++;
             }
         }
 
-        /*try (FileInputStream inputStream = new FileInputStream(pathToFile)) {
-            String everything = inputStream.toString();
-            String[] amounts = everything.split(" ");
-            int i = 0;
-            for (String a: amounts) {
-                basket.addToCart(i, Integer.parseInt(a));
-                i++;
-            }
-        }*/
         catch (IOException e) {
             System.out.println(e.toString());
         }
@@ -72,7 +93,7 @@ public class Basket implements Serializable {
 
     }
 
-    public void saveBin(String fileName) throws IOException {
+    public void saveBin(File fileName) throws IOException {
       FileOutputStream fileOutputStream
                 = new FileOutputStream(fileName);
         ObjectOutputStream objectOutputStream
@@ -82,7 +103,7 @@ public class Basket implements Serializable {
         objectOutputStream.close();
     }
 
-    static Basket loadFromBinFile(String fileName) throws IOException, ClassNotFoundException {
+    static Basket loadFromBinFile(File fileName) throws IOException, ClassNotFoundException {
         FileInputStream fileInputStream
                 = new FileInputStream(fileName);
         ObjectInputStream objectInputStream
